@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.compat.min.css" rel="stylesheet">
+    <title>基于雷达数据的3d识别</title>
+    <style>
+        /** 全局样式-开始,建议放在公共css样式文件中,比如common.css 或app.vue文件 */
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 16px
+        }
+
+        * {
+            position: relative;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            margin-top: 1vw;
+        }
+
+        .flex-col {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .flex-row {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .flex-col .flex-row {
+            width: 100%
+        }
+
+        /** 全局样式-结束*/
+
+        .homepage {
+            padding: 3.021vw 1.563vw 1.823vw 1.563vw;
+            background: rgba(0, 247, 235, 1);
+        }
+
+        .homepage .text {
+            display: block;
+            margin-right: auto;
+            margin-bottom: 1.302vw;
+            margin-left: auto;
+            font-size: 2.083vw;
+            line-height: 0.729vw;
+            font-weight: 700;
+        }
+
+        .homepage .wrapper {
+            width: 96.875vw;
+            justify-content: space-between;
+            padding: 1.302vw 1.25vw 1.563vw 1.25vw;
+            border-style: groove;
+            border-radius: 0.521vw;
+            box-shadow: 5px 5px 5px #F56C6C;
+            height: 81vw;
+        }
+
+        .homepage .wrapper .wraper-col {
+            width: 41.146vw;
+            height: 46.406vw;
+            padding: 0.781vw 0vw 0vw 1.719vw;
+        }
+
+        .homepage .wrapper .data-entry {
+            margin-bottom: 1vw;
+            font-size: 1.563vw;
+            line-height: 0.729vw;
+            font-weight: 500;
+        }
+
+        .homepage .wrapper .picture-data {
+            font-size: 1.563vw;
+            line-height: 0.729vw;
+            font-weight: 500;
+        }
+
+        .homepage .wrapper #picture img {
+            width: 40vw;
+            height: 15vw;
+        }
+
+        .homepage .wrapper #picture {
+            /* width: 15vw; */
+            min-height: 15vw;
+        }
+
+        .homepage .wrapper .radar-data {
+            margin-bottom: 7.031vw;
+            font-size: 1.563vw;
+            line-height: 0.729vw;
+        }
+
+        .homepage .wrapper .gx-data {
+            font-size: 1.563vw;
+            line-height: 0.729vw;
+            margin-left: 2vw;
+            /* margin-top: -7.7vw; */
+        }
+
+        .homepage .wrapper .tag-data {
+            font-size: 1.563vw;
+            line-height: 0.729vw;
+            margin-left: 2vw;
+            /* margin-top: -0.6vw; */
+        }
+        .homepage .data-con{
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+
+        }
+
+        .homepage .wrapper #bev img {
+            width: 22vw;
+            height: 30vw;
+        }
+
+        .homepage .wrapper #gx img {
+            width: 7vw;
+            height: 7vw;
+            /* margin-left: 23.5vw; */
+        }
+
+        /* .homepage .wrapper .bqq {
+            margin-top: -10vw;
+        } */
+        .homepage .wrapper #bq img {
+            width: 7vw;
+            height: 7vw;
+            /* margin-left: 33vw; */
+        }
+
+        .homepage .wrapper .wraper-col-two {
+            width: 51.875vw;
+            height: 46.51vw;
+            padding: 1.406vw 0vw 0vw 1.859vw;
+        }
+
+        .homepage .wrapper .model-prediction-results {
+            margin-bottom: 21.25vw;
+            font-size: 1.563vw;
+            line-height: 0.729vw;
+        }
+
+        .homepage .wrapper .tag-visualization {
+            /* margin-left: 0.313vw; */
+            font-size: 1.563vw;
+            line-height: 0.729vw;
+        }
+
+        .homepage .wrapper .ksh {
+            margin-left: 10vw;
+            margin-top: -1vw;
+        }
+
+        .homepage .wrapper .ksh img {
+            height: 35vw;
+        }
+
+        .homepage .wrapper .yc {
+            margin-top: -20vw;
+            margin-left: 10vw;
+        }
+
+        .homepage .wrapper .yc img {
+            height: 35vw;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex-col homepage">
+        <span class="text">基于深度学习的车辆3D识别</span>
+        <div class="flex-row wrapper">
+            <div class="flex-col wraper-col">
+                <span class="data-entry">数据输入：</span>
+                <!-- <form action="./" method="post" enctype="multipart/form-data"> -->
+                <input type="file" name="sju" value="sfdfs" onchange="load_sju(this)" />
+
+                <span class="picture-data">图片数据</span>
+                <div id="picture"></div>
+                <div class="data-con">
+                    <div class="radar-data">
+                        雷达数据
+                        <div id="bev"></div>
+                    </div>
+                    <div class="gx-data">关系数据
+                        <div id="gx" class="ggx"></div>
+                    </div>
+                    <div class="tag-data">标签数据
+                        <div id="bq" class="bqq"></div>
+                    </div>
+                </div>
+
+                <!-- <div id="bev"></div> -->
+                <!-- <div id="gx" class="ggx"></div>
+                <div id="bq" class="bqq"></div> -->
+
+
+                <!-- <input type="submit" class="picture-data" value="图片数据上传"/>
+                    <input type="submit" class="radar-data" value="雷达数据上传"/>
+                    <input type="submit" class="tag-data" value="关系数据上传"/> -->
+                <!-- </form> -->
+            </div>
+            <div class="flex-col wraper-col-two">
+                <span class="model-prediction-results" onclick="mxyc(this)">模型预测:</span>
+                <div id="mxyc" class="yc"></div>
+                <span class="tag-visualization" onclick="bqkshh(this)">标签可视化：</span>
+                <div id="bqksh" class="ksh"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script src="/templates/jquery-1.11.3.min.js"></script>
+
+<script>
+    // 数据上传
+    function load_sju(sju) {
+        var filePath = sju.value;
+        var fileExt = filePath.substring(filePath.lastIndexOf("."))
+            .toLowerCase();
+        //图片数据处理
+        if (fileExt == '.png') {
+            let imgDom = `<img src='${window.URL.createObjectURL(sju.files[0])}' />`
+            $("#picture").children().remove()
+            $("#picture").append(imgDom)
+            console.log(fileExt)
+            console.log(sju.files[0])
+            let file = new FormData()
+            file.append('img', sju.files[0])
+            $.ajax({
+                // async: true,
+                type: "POST",
+                url: "http://127.0.0.1:8244",
+                data: file,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    console.log(result)
+                },
+                error: function (e) {
+                    alert("异常: " + e);
+                }
+            });
+        }
+
+        //雷达数据处理
+        else if (fileExt == '.bin') {
+            console.log(fileExt)
+            console.log(sju.files)
+            console.log(sju.files[0])
+
+            let file = new FormData()
+            file.append('img', sju.files[0])
+            // $(".radar_img").attr("src", "");
+            $.ajax({
+                // async: true,
+                type: "POST",
+                url: "http://127.0.0.1:8244",
+                data: file,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    console.log(result, 123)
+                    let imgDom = `<img src='/bev/bev.png?time=${new Date()}' />`
+                    $("#bev").children().remove()
+                    $("#bev").append(imgDom)
+                    // $(".radar_img").attr("src", "/bev/bev.png");
+                },
+                error: function (e) {
+                    alert("异常: " + e);
+                }
+            });
+        }
+
+        //关系数据和标签数据处理
+        else if (fileExt == '.txt') {
+            let file = new FormData()
+            file.append('img', sju.files[0])
+            $.ajax({
+                // async: true,
+                type: "POST",
+                url: "http://127.0.0.1:8244",
+                data: file,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    console.log(JSON.parse(result).sf)
+                    let imgDom = `<img src='/bev/cg.png?time=${new Date()}' />`
+                    if (JSON.parse(result).sf == 'gx') {
+                        $("#gx").children().remove()
+                        $("#gx").append(imgDom)
+                    }
+                    else {
+                        $("#bq").children().remove()
+                        $("#bq").append(imgDom)
+                    }
+                },
+                error: function (e) {
+                    alert("异常: " + e);
+                }
+            });
+        }
+
+        else {
+            alert("您上传的数据格式不对,请重新上传！");
+        }
+    }
+    // 标签可视化
+    function bqkshh() {
+        // event.stopPropagation()
+        $.ajax({
+            // async: true,
+            type: "POST",
+            url: "http://127.0.0.1:8244/ksh",
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                if (JSON.parse(result).kk == 99) {
+                    let imgDom = `<img src='/templates/png/out.png?time=${new Date()}' />`
+                    $("#bqksh").children().remove()
+                    // $("#bqksh").html('')
+                    $("#bqksh").append(imgDom)
+                }
+            },
+            error: function (e) {
+                alert("异常: " + e);
+            }
+        });
+    }
+    // 模型预测
+    function mxyc() {
+        $.ajax({
+            // async: true,
+            type: "GET",
+            url: "http://127.0.0.1:8244/ksh",
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                console.log(JSON.parse(result))
+                if (JSON.parse(result).kk) {
+                    let imgDom = `<img src='/templates/png/yc.png?time=${new Date()}' />`
+                    $("#mxyc").children().remove()
+                    $("#mxyc").append(imgDom)
+                }
+            },
+            error: function (e) {
+                alert("异常: " + e);
+            }
+        });
+    }
+</script>
+
+
+</html>
