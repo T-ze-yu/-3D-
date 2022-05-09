@@ -31,7 +31,7 @@ The implementation is [here](https://github.com/maudzung/SFA3D/tree/ea0222c1b354
 The instructions for setting up a virtual environment is [here](https://github.com/maudzung/virtual_environment_python3).
 
 ```shell script
-git clone https://github.com/maudzung/SFA3D.git SFA3D
+git clone https://github.com/T-ze-yu/-3D-.git SFA3D
 cd SFA3D/
 pip install -r requirements.txt
 ```
